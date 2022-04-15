@@ -62,9 +62,9 @@ def new_run(args):
 
 def clerk_config_add_subparser(name, parser):
     subparser = parser.add_parser(name, description="add clerk config to ENV", help='add clerk config to ENV')
-    subparser.add_argument('-ss', '--spreadsheet-entry', required=True, type=str, help='subspace entry')
-    subparser.add_argument('-ws', '--worksheet-name', required=True, type=str, help='worksheet name')
-    subparser.add_argument('-w', '--worker-name', required=True, type=str, help='worker name')
+    subparser.add_argument('-ss', '--spreadsheet-entry', required=False, type=str, help='subspace entry')
+    subparser.add_argument('-ws', '--worksheet-name', required=False, type=str, help='worksheet name')
+    subparser.add_argument('-w', '--worker-name', required=False, type=str, help='worker name')
     subparser.add_argument('-c', '--credential-path', required=False, type=str, default='/home/lucliu/.clerk/clerk.json', help='bot app key credential')
     subparser.set_defaults(func=clerk_config_write_args)
     return subparser
