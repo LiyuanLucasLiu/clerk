@@ -1,3 +1,5 @@
+# Automatic Log Tracker for Deep Learning Experiments
+
 |worker-name| acc | lr |
 |---|---|---|
 |w0 | 0.9| 0.001|
