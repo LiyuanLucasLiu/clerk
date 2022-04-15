@@ -1,10 +1,3 @@
-TODOs:
-- [ ] subcommand: "proxy-runner"
-- [ ] subcommand: "worker-conclude"
-- [ ] subcommand: "log-emit"
-- [x] addGlobalEnv: "entry points -> global env"
-
-
 |worker-name| acc | lr |
 |---|---|---|
 |w0 | 0.9| 0.001|
