@@ -23,15 +23,15 @@ def clerk_config_write_args(args):
             previous_config = json.load(fin)
     else:
         previous_config = {}
-    if os.path.exists(args.credential_path):
+    if args.credential_path and os.path.exists(args.credential_path):
         with open(args.credential_path, 'r') as fin:
             credential = json.load(fin)
         previous_config['credential_path'] = credential
-    if len(args.spreadsheet_entry) > 0:
+    if args.spreadsheet_entry:
         previous_config['spreadsheet_entry'] = args.spreadsheet_entry
-    if len(args.worksheet_name) > 0:
+    if args.worksheet_name:
         previous_config['worksheet_name'] = args.worksheet_name
-    if len(args.worker_name) > 0:
+    if args.worker_name:
         previous_config['worker_name'] = args.worker_name
     with open(_config_path, 'w') as fout:
         json.dump(previous_config, fout)
