@@ -2,7 +2,7 @@
 import gspread
 import time
 import logging
-from .utils import clerk_config_update, update_cells, wsrange, row_values, col_values, update_cell
+from .utils import *
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ class SpreadsheetClerk(object):
         self._id_to_name = {i: v for v, i in self._name_to_id.items()}
         self._max_col_id = len(name_list)
 
-        rct = self._ws.row_count
+        rct = get_nonempty_row_ct(self._ws)
         self._worker_row_id = 0
         worker_list = col_values(self._ws, 1)
         while self._worker_row_id == 0:
@@ -82,10 +82,10 @@ class SpreadsheetClerk(object):
             worker_list = col_values(self._ws, 1)
             if worker_list[worker_row_id - 1] == worker_name:
                 self._worker_row_id = worker_row_id
-                self._new_row_added = worker_row_id > rct 
+                self._new_row_added = (worker_row_id > rct)
 
     def record(self, record):
-        if 0 == self._rank:
+        if 0 == self._rank and '=' in record:
             cell_list = wsrange(self._ws, self._worker_row_id, 1, self._worker_row_id, self._max_col_id)
             changed_cell_list = list()
             record = record.split(';')

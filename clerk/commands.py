@@ -121,14 +121,15 @@ def search_setup(args):
             if args.worksheet_name in ws_list:
                 if args.clean_worksheet:
                     sh.del_worksheet(sh.worksheet(args.worksheet_name))
-                    ws = sh.add_worksheet(title=args.worksheet_name, rows=100, cols=20)
+                    ws = sh.add_worksheet(title=args.worksheet_name, rows=1000, cols=26)
                     update_cell(ws, 1, 1, 'worker_name')
                     line_idx = 2
                 else:
                     ws = sh.worksheet(args.worksheet_name)
-                    line_idx = ws.row_count + 1
+                    rct = get_nonempty_row_ct(ws)
+                    line_idx = rct + 1
             else:
-                ws = sh.add_worksheet(title=args.worksheet_name, rows=100, cols=20)
+                ws = sh.add_worksheet(title=args.worksheet_name, rows=1000, cols=26)
                 update_cell(ws, 1, 1, 'worker_name')
                 line_idx = 2
         except gspread.exceptions.APIError as e:
