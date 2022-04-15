@@ -4,7 +4,7 @@ import argparse
 import time
 
 from .clerk import init_clerk_logger
-from .utils import clerk_config_write_args, clerk_config_args_update, clerk_config_update, wsrange, update_cell, update_cells, row_values
+from .utils import *
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +18,8 @@ def get_args_add_subparser(name, parser):
     subparser.set_defaults(func=get_args)
 
 def get_args(args):
-    updated_clerk_config = clerk_config_update(args.spreadsheet_entry, args.worksheet_name, args.worker_name, args.credential_path)
-    clerk = init_clerk_logger(**updated_clerk_config)
+    clerk_config = args_to_clerk_config(args)
+    clerk = init_clerk_logger(**clerk_config)
 
     exp_config = clerk.get_log_columns( args.fields )
     argstr = []
@@ -37,8 +37,8 @@ def add_log_add_subparser(name, parser):
     subparser.set_defaults(func=add_log)
 
 def add_log(args):
-    updated_clerk_config = clerk_config_update(args.spreadsheet_entry, args.worksheet_name, args.worker_name, args.credential_path)
-    init_clerk_logger(**updated_clerk_config)
+    clerk_config = args_to_clerk_config(args)
+    init_clerk_logger(**clerk_config)
     logger.info('[clerk] {}'.format(';'.join(args.log)))
     
 def new_run_add_subparser(name, parser):
@@ -50,8 +50,8 @@ def new_run_add_subparser(name, parser):
     subparser.set_defaults(func=new_run)
 
 def new_run(args):
-    updated_clerk_config = clerk_config_update(args.spreadsheet_entry, args.worksheet_name, args.worker_name, args.credential_path)
-    clerk = init_clerk_logger(**updated_clerk_config)
+    clerk_config = args_to_clerk_config(args)
+    clerk = init_clerk_logger(**clerk_config)
     if not clerk._new_row_added:
         logger.info('[clerk] worker {} finished one run!'.format(updated_clerk_config['worker_name']))
         logger.info("[clerk] worker_name='{}_finished'".format(updated_clerk_config['worker_name']))
@@ -93,7 +93,11 @@ def search_setup(args):
     gspread_succeed = False
     while not gspread_succeed:
         try:
-            gc = gspread.service_account(filename=args.credential_path)
+            if isinstance(args.credential_path, str):
+                gc = gspread.service_account(filename=args.credential_path)
+            else:
+                assert isinstance(args.credential_path, dict)
+                gc = gspread.service_account_from_dict(args.credential_path)
 
             if args.spreadsheet_entry.startswith('https'):
                 sh = gc.open_by_url(args.spreadsheet_entry)

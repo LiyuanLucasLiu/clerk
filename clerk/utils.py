@@ -8,13 +8,23 @@ logger = logging.getLogger(__name__)
 
 _config_path = '.clerkconfig'
 
+def args_to_clerk_config(args):
+    return {
+        "spreadsheet_entry": args.spreadsheet_entry,
+        "worksheet_name": args.worksheet_name,
+        "worker_name": args.worker_name,
+        "credential_path": args.credential_path,
+    }
+
 def clerk_config_write_args(args):
+    with open(credential_path, 'r') as fin:
+        credential = json.load(fin)
     with open(_config_path, 'w') as fout:
         json.dump({
-            'spreadsheet_entry': args.spreadsheet_entry,
+            'spreadsheet_entry': "": args.spreadsheet_entry,
             'worksheet_name': args.worksheet_name,
             'worker_name': args.worker_name,
-            'credential_path': args.credential_path,
+            'credential_path': args.credential,
         }, fout)
 
 def clerk_config_read():
@@ -49,12 +59,14 @@ def clerk_config_update(
     if len(spreadsheet_entry) > 0 and \
         len(worksheet_name) > 0 and \
         len(worker_name) > 0 and \
-        os.path.exists(credential_path):    
+        os.path.exists(credential_path):
+        with open(credential_path, 'r') as fin:
+            credential = json.load(fin)
         config_dict = {
             'spreadsheet_entry': spreadsheet_entry,
             'worksheet_name': worksheet_name,
             'worker_name': worker_name,
-            'credential_path': credential_path,
+            'credential_path': credential,
         }
         with open(_config_path, 'w') as fout:
             json.dump(config_dict, fout)
