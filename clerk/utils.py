@@ -17,14 +17,14 @@ def args_to_clerk_config(args):
     }
 
 def clerk_config_write_args(args):
-    with open(credential_path, 'r') as fin:
+    with open(args.credential_path, 'r') as fin:
         credential = json.load(fin)
     with open(_config_path, 'w') as fout:
         json.dump({
-            'spreadsheet_entry': "": args.spreadsheet_entry,
+            'spreadsheet_entry': args.spreadsheet_entry,
             'worksheet_name': args.worksheet_name,
             'worker_name': args.worker_name,
-            'credential_path': args.credential,
+            'credential_path': credential,
         }, fout)
 
 def clerk_config_read():

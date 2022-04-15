@@ -53,8 +53,8 @@ def new_run(args):
     clerk_config = args_to_clerk_config(args)
     clerk = init_clerk_logger(**clerk_config)
     if not clerk._new_row_added:
-        logger.info('[clerk] worker {} finished one run!'.format(updated_clerk_config['worker_name']))
-        logger.info("[clerk] worker_name='{}_finished'".format(updated_clerk_config['worker_name']))
+        logger.info('[clerk] worker {} finished one run!'.format(clerk._worker_name))
+        logger.info("[clerk] worker_name='{}_finished'".format(clerk._worker_name))
 
 def clerk_config_add_subparser(name, parser):
     subparser = parser.add_parser(name, description="add clerk config to ENV", help='add clerk config to ENV')
