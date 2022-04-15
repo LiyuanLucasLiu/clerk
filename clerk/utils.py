@@ -34,7 +34,7 @@ def clerk_config_write_args(args):
     if len(args.worker_name) > 0:
         previous_config['worker_name'] = args.worker_name
     with open(_config_path, 'w') as fout:
-        json.dump(previous_config, fount)
+        json.dump(previous_config, fout)
 
 def clerk_config_read():
     assert os.path.exists(_config_path)
