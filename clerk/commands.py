@@ -21,7 +21,7 @@ def get_args(args):
     clerk_config = args_to_clerk_config(args)
     clerk = init_clerk_logger(**clerk_config)
 
-    exp_config = clerk.get_log_columns( args.fields )
+    exp_config = clerk.get_log_columns(args.fields)
     argstr = []
     for k, v in exp_config.items():
         argstr.append('--{} {}'.format(k, v))
@@ -52,9 +52,13 @@ def new_run_add_subparser(name, parser):
 def new_run(args):
     clerk_config = args_to_clerk_config(args)
     clerk = init_clerk_logger(**clerk_config)
-    if not clerk._new_row_added:
+    if not clerk._new_worker_record_added:
         logger.info('[clerk] worker {} finished one run!'.format(clerk._worker_name))
         logger.info("[clerk] worker_name='{}_finished'".format(clerk._worker_name))
+    if clerk._new_row_added:
+        print('no_preset_found')
+    else:
+        print('preset_found')
 
 def clerk_config_add_subparser(name, parser):
     subparser = parser.add_parser(name, description="add clerk config to ENV", help='add clerk config to ENV')
