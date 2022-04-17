@@ -2,15 +2,38 @@ import gspread
 import logging
 import argparse
 import time
+import sys
 
 from .clerk import init_clerk_logger
 from .utils import *
 
 logger = logging.getLogger(__name__)
 
+def from_stdin_add_subparser(name, parser):
+    subparser = parser.add_parser(name, description="get logs from std-in, can be used with bash pipe", help='get logs from std-in, can be used with bash pipe')
+    subparser.add_argument('fields', nargs=argparse.REMAINDER, help='define of the search space, format is "pattern=\'([a-z_]+) -- epoch ([0-9]+) -- Dev ACC: ([0-9\.]+)\'"')
+    subparser.add_argument('-ss', '--spreadsheet-entry', required=False, type=str, default="", help='subspace entry')
+    subparser.add_argument('-ws', '--worksheet-name', required=False, type=str, default="", help='worksheet name')
+    subparser.add_argument('-w', '--worker-name', required=False, type=str, help='worker name')
+    subparser.add_argument('-c', '--credential-path', required=False, type=str, default='/home/lucliu/.clerk/clerk.json', help='bot app key credential')
+    subparser.set_defaults(func=from_stdin)
+
+def from_stdin(args):
+    clerk_config = args_to_clerk_config(args)
+    init_clerk_logger(**clerk_config)
+
+    name_to_regx = dict()
+    for si in space:
+        si = si.split('=')
+        assert len(si) == 2
+        name_to_regx[si[0]] = si[1]
+    
+    for line in sys.stdin:
+        
+        
 def get_args_add_subparser(name, parser):
     subparser = parser.add_parser(name, description="get train args as argparser format from the spreadsheet", help='get train args as argparser format from the spreadsheet')
-    subparser.add_argument('fields', nargs=argparse.REMAINDER, help='fields of interest')
+    subparser.add_argument('fields', nargs=argparse.REMAINDER, help='fields of interest, format is "learning_rate batch_size"')
     subparser.add_argument('-ss', '--spreadsheet-entry', required=False, type=str, default="", help='subspace entry')
     subparser.add_argument('-ws', '--worksheet-name', required=False, type=str, default="", help='worksheet name')
     subparser.add_argument('-w', '--worker-name', required=False, type=str, help='worker name')
@@ -186,6 +209,7 @@ def run():
             "new-run": new_run_add_subparser,
             "add-log": add_log_add_subparser,
             "get-args": get_args_add_subparser,
+            "from-stdin": from_stdin_add_subparser,
     }
 
     for name, subcommand in subcommands.items():
