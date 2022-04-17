@@ -7,4 +7,6 @@
 
 email: clerkx@log-clerk.iam.gserviceaccount.com
 
-pip install https://github.com/LiyuanLucasLiu/clerk/archive/refs/tags/v0.1.0.post2.zip
+pip install https://github.com/LiyuanLucasLiu/clerk/archive/refs/tags/v0.1.0.post4.zip
+
+config path: CLERK_CONFIG
