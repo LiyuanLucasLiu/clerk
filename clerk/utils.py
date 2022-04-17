@@ -6,7 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-_config_path = '.clerkconfig'
+_config_path = os.environ.get('CLERK_CONFIG', '.clerkconfig')
 
 def args_to_clerk_config(args):
     return {
