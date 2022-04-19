@@ -75,12 +75,12 @@ class SpreadsheetClerk(object):
         self._worker_row_id = 0
         worker_list = col_values(self._ws, 1)
         while self._worker_row_id == 0:
-            self._new_worker_record_added, worker_row_id = find_row_ind(worker_list, worker_name)
+            self._new_worker_record_added, worker_row_id = find_row_ind(worker_list, self._worker_name)
             if 0 == self._rank:
-                update_cell(self._ws, worker_row_id, 1, worker_name)
+                update_cell(self._ws, worker_row_id, 1, self._worker_name)
             time.sleep(2)
             worker_list = col_values(self._ws, 1)
-            if worker_list[worker_row_id - 1] == worker_name:
+            if worker_list[worker_row_id - 1] == self._worker_name:
                 self._worker_row_id = worker_row_id
                 self._new_row_added = (worker_row_id > rct)
 

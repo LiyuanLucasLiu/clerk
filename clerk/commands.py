@@ -55,6 +55,7 @@ def new_run(args):
     if not clerk._new_worker_record_added:
         logger.info('[clerk] worker {} finished one run!'.format(clerk._worker_name))
         logger.info("[clerk] worker_name='{}_finished'".format(clerk._worker_name))
+        clerk = init_clerk_logger(**clerk_config)
     if clerk._new_row_added:
         print('no_preset_found')
     else:
@@ -181,7 +182,7 @@ def run():
     subparsers = parser.add_subparsers(title='Commands', metavar='')
 
     subcommands = {
-            "clerk-config": clerk_config_add_subparser,
+            "config": clerk_config_add_subparser,
             "search-setup": search_setup_add_subparser,
             "new-run": new_run_add_subparser,
             "add-log": add_log_add_subparser,
