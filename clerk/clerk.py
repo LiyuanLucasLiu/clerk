@@ -31,7 +31,7 @@ def update_args_w_clerk(args, clerk):
 
 def find_row_ind(worker_list, worker_name):
     for i, wi in enumerate(worker_list):
-        if not wi.endswith('_finished') and wi == worker_name:
+        if len(wi) == 0 or wi.isspace() or (not wi.endswith('_finished') and wi == worker_name):
             return False, i + 1
     return True, len(worker_list) + 1
 
