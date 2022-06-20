@@ -12,7 +12,7 @@ share spreadsheet to email: clerkx@log-clerk.iam.gserviceaccount.com
 
 install clerk:
 ```
-pip install https://github.com/LiyuanLucasLiu/clerk/archive/refs/tags/v0.1.0.post4.zip
+pip install git+https://github.com/LiyuanLucasLiu/clerk.git
 ```
 
 get clerk credential and store it to the config path: CLERK_CONFIG
