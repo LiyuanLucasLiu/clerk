@@ -27,6 +27,7 @@ def clerk_config_write_args(args):
                     previous_config = json.load(fin)
             except json.decoder.JSONDecodeError:
                 count -= 1
+                time.sleep(2)
     else:
         previous_config = {}
         
