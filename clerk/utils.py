@@ -19,22 +19,35 @@ def args_to_clerk_config(args):
 def clerk_config_write_args(args):
 
     if os.path.exists(_config_path):
-        with open(_config_path, 'r') as fin:
-            previous_config = json.load(fin)
+        succeed=False
+        count = 32
+        while not succeed and count > 0:
+            try: 
+                with open(_config_path, 'r') as fin:
+                    previous_config = json.load(fin)
+            except json.decoder.JSONDecodeError:
+                count -= 1
     else:
         previous_config = {}
+        
+    dirty=False 
     if args.credential_path and os.path.exists(args.credential_path):
         with open(args.credential_path, 'r') as fin:
             credential = json.load(fin)
         previous_config['credential_path'] = credential
+        dirty=True
     if args.spreadsheet_entry:
         previous_config['spreadsheet_entry'] = args.spreadsheet_entry
+        dirty=True
     if args.worksheet_name:
         previous_config['worksheet_name'] = args.worksheet_name
+        dirty=True
     if args.worker_name:
         previous_config['worker_name'] = args.worker_name
-    with open(_config_path, 'w') as fout:
-        json.dump(previous_config, fout)
+        dirty=True
+    if dirty:
+        with open(_config_path, 'w') as fout:
+            json.dump(previous_config, fout)
 
 def clerk_config_read():
     assert os.path.exists(_config_path)
