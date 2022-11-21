@@ -2,6 +2,7 @@
 import gspread
 import time
 import logging
+import random
 from .utils import *
 
 logger = logging.getLogger(__name__)
@@ -61,7 +62,7 @@ class SpreadsheetClerk(object):
                 self._ws = self._sh.worksheet(worksheet_name)
             except gspread.exceptions.APIError as e:
                 logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
-                time.sleep(20)
+                time.sleep(20+random.uniform(0, 1))
             else:
                 gspread_succeed = True
         
