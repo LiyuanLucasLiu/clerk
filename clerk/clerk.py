@@ -54,18 +54,35 @@ class SpreadsheetClerk(object):
                 else:
                     assert isinstance(credential_path, dict)
                     self._gc = gspread.service_account_from_dict(credential_path)
-
-                if spreadsheet_entry.startswith('https'):
-                    self._sh = self._gc.open_by_url(spreadsheet_entry)
-                else:
-                    self._sh = self._gc.open(spreadsheet_entry)
-                self._ws = self._sh.worksheet(worksheet_name)
             except gspread.exceptions.APIError as e:
                 logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
                 time.sleep(20+random.uniform(0, 1))
             else:
                 gspread_succeed = True
         
+        gspread_succeed = False
+        while not gspread_succeed:
+            try:
+                if spreadsheet_entry.startswith('https'):
+                    self._sh = self._gc.open_by_url(spreadsheet_entry)
+                else:
+                    self._sh = self._gc.open(spreadsheet_entry)
+            except gspread.exceptions.APIError as e:
+                logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
+                time.sleep(20+random.uniform(0, 1))
+            else:
+                gspread_succeed = True
+              
+        gspread_succeed = False
+        while not gspread_succeed:
+            try:
+                self._ws = self._sh.worksheet(worksheet_name)
+            except gspread.exceptions.APIError as e:
+                logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
+                time.sleep(20+random.uniform(0, 1))
+            else:
+                gspread_succeed = True
+                
         self._worker_name = worker_name
 
         name_list = row_values(self._ws, 1)
