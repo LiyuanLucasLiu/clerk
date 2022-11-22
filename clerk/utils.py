@@ -101,61 +101,66 @@ def clerk_config_update(
 
 
 def update_cells(ws, cell_list):
-    succeed = False
+    succeed, wt = False, 20
     while not succeed:
         try:
             results = ws.update_cells(cell_list)
         except gspread.exceptions.APIError as e:
-            logger.error('[clerk] gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
-            time.sleep(20+random.uniform(0, 1))
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
+            time.sleep(wt)
+            wt += 20 * random.uniform(0, 1)
         else:
             succeed = True
     return results
 
 def wsrange(ws, first_row, first_col, last_row, last_col):
-    succeed = False
+    succeed, wt = False, 20
     while not succeed:
         try:
             results = ws.range(first_row, first_col, last_row, last_col)
         except gspread.exceptions.APIError as e:
-            logger.error('[clerk] gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
-            time.sleep(20+random.uniform(0, 1))
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
+            time.sleep(wt)
+            wt += 20 * random.uniform(0, 1)
         else:
             succeed = True
     return results
 
 def row_values(ws, row_id):
-    succeed = False
+    succeed, wt = False, 20
     while not succeed:
         try:
             results = ws.row_values(row_id)
         except gspread.exceptions.APIError as e:
-            logger.error('[clerk] gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
-            time.sleep(20+random.uniform(0, 1))
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
+            time.sleep(wt)
+            wt += 20 * random.uniform(0, 1)
         else:
             succeed = True
     return results
 
 def col_values(ws, col_id):
-    succeed = False
+    succeed, wt = False, 20
     while not succeed:
         try:
             results = ws.col_values(col_id)
         except gspread.exceptions.APIError as e:
-            logger.error('[clerk] gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
-            time.sleep(20+random.uniform(0, 1))
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
+            time.sleep(wt)
+            wt += 20 * random.uniform(0, 1)
         else:
             succeed = True
     return results
     
 def update_cell(ws, row_id, col_id, value):
-    succeed = False
+    succeed, wt = False, 20
     while not succeed:
         try:
             results = ws.update_cell(row_id, col_id, value)
         except gspread.exceptions.APIError as e:
-            logger.error('[clerk] gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
-            time.sleep(20+random.uniform(0, 1))
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
+            time.sleep(wt)
+            wt += 20 * random.uniform(0, 1)
         else:
             succeed = True
     return results

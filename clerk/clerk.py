@@ -46,7 +46,7 @@ class SpreadsheetClerk(object):
         
         self._rank = rank
 
-        gspread_succeed = False
+        gspread_succeed, wt = False, 20
         while not gspread_succeed:
             try:
                 if isinstance(credential_path, str):
@@ -55,12 +55,13 @@ class SpreadsheetClerk(object):
                     assert isinstance(credential_path, dict)
                     self._gc = gspread.service_account_from_dict(credential_path)
             except gspread.exceptions.APIError as e:
-                logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
-                time.sleep(20+random.uniform(0, 1))
+                logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
+                time.sleep(wt)
+                wt += 20 * random.uniform(0, 1)
             else:
                 gspread_succeed = True
         
-        gspread_succeed = False
+        gspread_succeed, wt = False, 20
         while not gspread_succeed:
             try:
                 if spreadsheet_entry.startswith('https'):
@@ -68,18 +69,20 @@ class SpreadsheetClerk(object):
                 else:
                     self._sh = self._gc.open(spreadsheet_entry)
             except gspread.exceptions.APIError as e:
-                logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
-                time.sleep(20+random.uniform(0, 1))
+                logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
+                time.sleep(wt)
+                wt += 20 * random.uniform(0, 1)
             else:
                 gspread_succeed = True
               
-        gspread_succeed = False
+        gspread_succeed, wt = False, 20
         while not gspread_succeed:
             try:
                 self._ws = self._sh.worksheet(worksheet_name)
             except gspread.exceptions.APIError as e:
-                logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
-                time.sleep(20+random.uniform(0, 1))
+                logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
+                time.sleep(wt)
+                wt += 20 * random.uniform(0, 1)
             else:
                 gspread_succeed = True
                 
