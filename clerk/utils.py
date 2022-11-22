@@ -166,13 +166,14 @@ def update_cell(ws, row_id, col_id, value):
     return results
 
 def get_nonempty_row_ct(ws):
-    succeed = False
+    succeed, wt = False, 20
     while not succeed:
         try:
             results = len(ws.get_all_values())
         except gspread.exceptions.APIError as e:
-            logger.error('[clerk] gspread error: 429 RESOURCE_EXHAUSTED! wait 20s')
-            time.sleep(20+random.uniform(0, 1))
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
+            time.sleep(wt)
+            wt += 20 * random.uniform(0, 1)
         else:
             succeed = True
     return results
