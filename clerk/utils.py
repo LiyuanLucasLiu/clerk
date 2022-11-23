@@ -109,7 +109,7 @@ def update_cells(ws, cell_list):
             wtt = wt * random.uniform(0, 1)
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
             time.sleep(wtt)
-            wt = min(w * (1 + random.uniform(0, 1)), 600)
+            wt = min(wt * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
@@ -123,7 +123,7 @@ def wsrange(ws, first_row, first_col, last_row, last_col):
             wtt = wt * random.uniform(0, 1)
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
             time.sleep(wtt)
-            wt = min(w * (1 + random.uniform(0, 1)), 600)
+            wt = min(wt * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
@@ -137,7 +137,7 @@ def row_values(ws, row_id):
             wtt = wt * random.uniform(0, 1)
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
             time.sleep(wtt)
-            wt = min(w * (1 + random.uniform(0, 1)), 600)
+            wt = min(wt * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
@@ -151,7 +151,7 @@ def col_values(ws, col_id):
             wtt = wt * random.uniform(0, 1)
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
             time.sleep(wtt)
-            wt = min(w * (1 + random.uniform(0, 1)), 600)
+            wt = min(wt * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
@@ -165,7 +165,7 @@ def update_cell(ws, row_id, col_id, value):
             wtt = wt * random.uniform(0, 1)
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
             time.sleep(wtt)
-            wt = min(w * (1 + random.uniform(0, 1)), 600)
+            wt = min(wt * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
@@ -179,7 +179,7 @@ def get_nonempty_row_ct(ws):
             wtt = wt * random.uniform(0, 1)
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
             time.sleep(wtt)
-            wt = min(w * (1 + random.uniform(0, 1)), 600)
+            wt = min(wt * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
