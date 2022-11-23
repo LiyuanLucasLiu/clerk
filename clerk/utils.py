@@ -108,7 +108,7 @@ def update_cells(ws, cell_list):
         except gspread.exceptions.APIError as e:
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
             time.sleep(wt)
-            wt += 20 * random.uniform(0, 1)
+            wt *= 1 + random.uniform(0, 1)
         else:
             succeed = True
     return results
@@ -121,7 +121,7 @@ def wsrange(ws, first_row, first_col, last_row, last_col):
         except gspread.exceptions.APIError as e:
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
             time.sleep(wt)
-            wt += 20 * random.uniform(0, 1)
+            wt *= 1 + random.uniform(0, 1)
         else:
             succeed = True
     return results
@@ -134,7 +134,7 @@ def row_values(ws, row_id):
         except gspread.exceptions.APIError as e:
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
             time.sleep(wt)
-            wt += 20 * random.uniform(0, 1)
+            wt *= 1 + random.uniform(0, 1)
         else:
             succeed = True
     return results
@@ -147,7 +147,7 @@ def col_values(ws, col_id):
         except gspread.exceptions.APIError as e:
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
             time.sleep(wt)
-            wt += 20 * random.uniform(0, 1)
+            wt *= 1 + random.uniform(0, 1)
         else:
             succeed = True
     return results
@@ -160,7 +160,7 @@ def update_cell(ws, row_id, col_id, value):
         except gspread.exceptions.APIError as e:
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
             time.sleep(wt)
-            wt += 20 * random.uniform(0, 1)
+            wt *= 1 + random.uniform(0, 1)
         else:
             succeed = True
     return results
@@ -173,7 +173,7 @@ def get_nonempty_row_ct(ws):
         except gspread.exceptions.APIError as e:
             logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
             time.sleep(wt)
-            wt += 20 * random.uniform(0, 1)
+            wt *= 1 + random.uniform(0, 1)
         else:
             succeed = True
     return results

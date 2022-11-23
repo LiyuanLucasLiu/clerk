@@ -57,7 +57,7 @@ class SpreadsheetClerk(object):
             except gspread.exceptions.APIError as e:
                 logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
                 time.sleep(wt)
-                wt += 20 * random.uniform(0, 1)
+                wt *= 1 + random.uniform(0, 1)
             else:
                 gspread_succeed = True
         
@@ -71,7 +71,7 @@ class SpreadsheetClerk(object):
             except gspread.exceptions.APIError as e:
                 logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
                 time.sleep(wt)
-                wt += 20 * random.uniform(0, 1)
+                wt *= 1 + random.uniform(0, 1)
             else:
                 gspread_succeed = True
               
@@ -82,7 +82,7 @@ class SpreadsheetClerk(object):
             except gspread.exceptions.APIError as e:
                 logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
                 time.sleep(wt)
-                wt += 20 * random.uniform(0, 1)
+                wt *= 1 + random.uniform(0, 1)
             else:
                 gspread_succeed = True
                 
