@@ -96,7 +96,7 @@ def search_setup(args):
         idx_to_limit.append(len(si[1]))
         idx_to_values.append(si[1])
 
-    gspread_succeed, wt = False, 20
+    gspread_succeed, wt = False, 30
     while not gspread_succeed:
         try:
             if isinstance(args.credential_path, str):
@@ -110,15 +110,16 @@ def search_setup(args):
             else:
                 sh = gc.open(args.spreadsheet_entry)
         except gspread.exceptions.APIError as e:
-            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
-            time.sleep(wt)
-            wt *= 1 + random.uniform(0, 1)
+            wtt = wt * random.uniform(0, 1)
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+            time.sleep(wtt)
+            wt = min(w * (1 + random.uniform(0, 1)), 600)
         else:
             gspread_succeed = True
 
     ws_list = [wsi.title for wsi in sh.worksheets()]
 
-    gspread_succeed, wt = False, 20
+    gspread_succeed, wt = False, 30
     while not gspread_succeed:
         try:
             if args.worksheet_name in ws_list:
@@ -136,9 +137,10 @@ def search_setup(args):
                 update_cell(ws, 1, 1, 'worker_name')
                 line_idx = 2
         except gspread.exceptions.APIError as e:
-            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
-            time.sleep(wt)
-            wt *= 1 + random.uniform(0, 1)
+            wtt = wt * random.uniform(0, 1)
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+            time.sleep(wtt)
+            wt = min(w * (1 + random.uniform(0, 1)), 600)
         else:
             gspread_succeed = True
     

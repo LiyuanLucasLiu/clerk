@@ -101,79 +101,85 @@ def clerk_config_update(
 
 
 def update_cells(ws, cell_list):
-    succeed, wt = False, 20
+    succeed, wt = False, 30
     while not succeed:
         try:
             results = ws.update_cells(cell_list)
         except gspread.exceptions.APIError as e:
-            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
-            time.sleep(wt)
-            wt *= 1 + random.uniform(0, 1)
+            wtt = wt * random.uniform(0, 1)
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+            time.sleep(wtt)
+            wt = min(w * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
 
 def wsrange(ws, first_row, first_col, last_row, last_col):
-    succeed, wt = False, 20
+    succeed, wt = False, 30
     while not succeed:
         try:
             results = ws.range(first_row, first_col, last_row, last_col)
         except gspread.exceptions.APIError as e:
-            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
-            time.sleep(wt)
-            wt *= 1 + random.uniform(0, 1)
+            wtt = wt * random.uniform(0, 1)
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+            time.sleep(wtt)
+            wt = min(w * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
 
 def row_values(ws, row_id):
-    succeed, wt = False, 20
+    succeed, wt = False, 30
     while not succeed:
         try:
             results = ws.row_values(row_id)
         except gspread.exceptions.APIError as e:
-            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
-            time.sleep(wt)
-            wt *= 1 + random.uniform(0, 1)
+            wtt = wt * random.uniform(0, 1)
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+            time.sleep(wtt)
+            wt = min(w * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
 
 def col_values(ws, col_id):
-    succeed, wt = False, 20
+    succeed, wt = False, 30
     while not succeed:
         try:
             results = ws.col_values(col_id)
         except gspread.exceptions.APIError as e:
-            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
-            time.sleep(wt)
-            wt *= 1 + random.uniform(0, 1)
+            wtt = wt * random.uniform(0, 1)
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+            time.sleep(wtt)
+            wt = min(w * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
     
 def update_cell(ws, row_id, col_id, value):
-    succeed, wt = False, 20
+    succeed, wt = False, 30
     while not succeed:
         try:
             results = ws.update_cell(row_id, col_id, value)
         except gspread.exceptions.APIError as e:
-            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
-            time.sleep(wt)
-            wt *= 1 + random.uniform(0, 1)
+            wtt = wt * random.uniform(0, 1)
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+            time.sleep(wtt)
+            wt = min(w * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
 
 def get_nonempty_row_ct(ws):
-    succeed, wt = False, 20
+    succeed, wt = False, 30
     while not succeed:
         try:
             results = len(ws.get_all_values())
         except gspread.exceptions.APIError as e:
-            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wt))
-            time.sleep(wt)
-            wt *= 1 + random.uniform(0, 1)
+            wtt = wt * random.uniform(0, 1)
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+            time.sleep(wtt)
+            wt = min(w * (1 + random.uniform(0, 1)), 600)
         else:
             succeed = True
     return results
