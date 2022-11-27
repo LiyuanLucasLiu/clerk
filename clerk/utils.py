@@ -177,7 +177,8 @@ def read_cell_and_update_if_empty(ws, row_id, col_id, value):
         try:
             current_value = ws.cell(row_id, col_id).value
             if (
-                len(current_value) == 0
+                current_value is None
+                or len(current_value) == 0
                 or current_value.isspace()
             ):
                 ws.update_cell(row_id, col_id, value)

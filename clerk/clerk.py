@@ -98,10 +98,11 @@ class SpreadsheetClerk(object):
         self._max_col_id = len(name_list)
 
         rct = get_nonempty_row_ct(self._ws)
-        self._worker_row_id, worker_row_id = 0
+        self._worker_row_id, worker_row_id = 0, 0
         while self._worker_row_id == 0:
 
             worker_list = values(self._ws, 'A{}:A'.format(worker_row_id + 1))
+            worker_list = [item for sublist in worker_list for item in sublist]
             
             self._new_worker_record_added, worker_row_id_shift = find_row_ind(worker_list, self._worker_name)
             worker_row_id += worker_row_id_shift
