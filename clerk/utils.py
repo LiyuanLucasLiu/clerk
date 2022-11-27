@@ -155,7 +155,45 @@ def col_values(ws, col_id):
         else:
             succeed = True
     return results
-    
+
+def values(ws, range_str):
+    succeed, wt = False, 30
+    while not succeed:
+        try:
+            results = ws.get_values(range_str)
+        except gspread.exceptions.APIError as e:
+            wtt = wt * random.uniform(0, 1)
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+            time.sleep(wtt)
+            wt = min(wt * (1 + random.uniform(0, 1)), 600)
+        else:
+            succeed = True
+    return results
+
+
+def read_cell_and_update_if_empty(ws, row_id, col_id, value):
+    succeed, wt = False, 30
+    while not succeed:
+        try:
+            current_value = ws.cell(row_id, col_id).value
+            if (
+                current_value is None
+                or len(current_value) == 0
+                or current_value.isspace()
+            ):
+                ws.update_cell(row_id, col_id, value)
+                results = True
+            else:
+                results = (current_value == value)
+        except gspread.exceptions.APIError as e:
+            wtt = wt * random.uniform(0, 1)
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+            time.sleep(wtt)
+            wt = min(wt * (1 + random.uniform(0, 1)), 600)
+        else:
+            succeed = True
+    return results
+
 def update_cell(ws, row_id, col_id, value):
     succeed, wt = False, 30
     while not succeed:
@@ -169,6 +207,20 @@ def update_cell(ws, row_id, col_id, value):
         else:
             succeed = True
     return results
+
+def cell_value(ws, row_id, col_id):
+    succeed, wt = False, 30
+    while not succeed:
+        try:
+            result = ws.cell(row_id, col_id).value
+        except gspread.exceptions.APIError as e:
+            wtt = wt * random.uniform(0, 1)
+            logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+            time.sleep(wtt)
+            wt = min(wt * (1 + random.uniform(0, 1)), 600)
+        else:
+            succeed = True
+    return result
 
 def get_nonempty_row_ct(ws):
     succeed, wt = False, 30

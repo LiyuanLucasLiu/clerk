@@ -45,70 +45,77 @@ class SpreadsheetClerk(object):
             kwargs['spreadsheet_entry'], kwargs['worksheet_name'], kwargs['worker_name'], kwargs['credential_path']
         
         self._rank = rank
-
-        gspread_succeed, wt = False, 30
-        while not gspread_succeed:
-            try:
-                if isinstance(credential_path, str):
-                    self._gc = gspread.service_account(filename=credential_path)
-                else:
-                    assert isinstance(credential_path, dict)
-                    self._gc = gspread.service_account_from_dict(credential_path)
-            except gspread.exceptions.APIError as e:
-                wtt = wt * random.uniform(0, 1)
-                logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
-                time.sleep(wtt)
-                wt = min(wt * (1 + random.uniform(0, 1)), 600)
-            else:
-                gspread_succeed = True
         
-        gspread_succeed, wt = False, 30
-        while not gspread_succeed:
-            try:
-                if spreadsheet_entry.startswith('https'):
-                    self._sh = self._gc.open_by_url(spreadsheet_entry)
+        if 0 == rank:
+            gspread_succeed, wt = False, 30
+            while not gspread_succeed:
+                try:
+                    if isinstance(credential_path, str):
+                        self._gc = gspread.service_account(filename=credential_path)
+                    else:
+                        assert isinstance(credential_path, dict)
+                        self._gc = gspread.service_account_from_dict(credential_path)
+                except gspread.exceptions.APIError as e:
+                    wtt = wt * random.uniform(0, 1)
+                    logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+                    time.sleep(wtt)
+                    wt = min(wt * (1 + random.uniform(0, 1)), 600)
                 else:
-                    self._sh = self._gc.open(spreadsheet_entry)
-            except gspread.exceptions.APIError as e:
-                wtt = wt * random.uniform(0, 1)
-                logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
-                time.sleep(wtt)
-                wt = min(wt * (1 + random.uniform(0, 1)), 600)
-            else:
-                gspread_succeed = True
-              
-        gspread_succeed, wt = False, 30
-        while not gspread_succeed:
-            try:
-                self._ws = self._sh.worksheet(worksheet_name)
-            except gspread.exceptions.APIError as e:
-                wtt = wt * random.uniform(0, 1)
-                logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
-                time.sleep(wtt)
-                wt = min(wt * (1 + random.uniform(0, 1)), 600)
-            else:
-                gspread_succeed = True
+                    gspread_succeed = True
+            
+            gspread_succeed, wt = False, 30
+            while not gspread_succeed:
+                try:
+                    if spreadsheet_entry.startswith('https'):
+                        self._sh = self._gc.open_by_url(spreadsheet_entry)
+                    else:
+                        self._sh = self._gc.open(spreadsheet_entry)
+                except gspread.exceptions.APIError as e:
+                    wtt = wt * random.uniform(0, 1)
+                    logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+                    time.sleep(wtt)
+                    wt = min(wt * (1 + random.uniform(0, 1)), 600)
+                else:
+                    gspread_succeed = True
                 
-        self._worker_name = worker_name
+            gspread_succeed, wt = False, 30
+            while not gspread_succeed:
+                try:
+                    self._ws = self._sh.worksheet(worksheet_name)
+                except gspread.exceptions.APIError as e:
+                    wtt = wt * random.uniform(0, 1)
+                    logger.error('gspread error: 429 RESOURCE_EXHAUSTED! wait {}s'.format(wtt))
+                    time.sleep(wtt)
+                    wt = min(wt * (1 + random.uniform(0, 1)), 600)
+                else:
+                    gspread_succeed = True
+                    
+            self._worker_name = worker_name
 
-        name_list = row_values(self._ws, 1)
-        assert name_list[0] == 'worker_name' or ''
-        self._name_to_id = {v: i+1 for i, v in enumerate(name_list) if len(v) > 0}
-        self._id_to_name = {i: v for v, i in self._name_to_id.items()}
-        self._max_col_id = len(name_list)
+            name_list = row_values(self._ws, 1)
+            assert name_list[0] == 'worker_name' or ''
+            self._name_to_id = {v: i+1 for i, v in enumerate(name_list) if len(v) > 0}
+            self._id_to_name = {i: v for v, i in self._name_to_id.items()}
+            self._max_col_id = len(name_list)
 
-        rct = get_nonempty_row_ct(self._ws)
-        self._worker_row_id = 0
-        worker_list = col_values(self._ws, 1)
-        while self._worker_row_id == 0:
-            self._new_worker_record_added, worker_row_id = find_row_ind(worker_list, self._worker_name)
-            if 0 == self._rank:
-                update_cell(self._ws, worker_row_id, 1, self._worker_name)
-            time.sleep(10)
-            worker_list = col_values(self._ws, 1)
-            if worker_list[worker_row_id - 1] == self._worker_name:
-                self._worker_row_id = worker_row_id
-                self._new_row_added = (worker_row_id > rct)
+            rct = get_nonempty_row_ct(self._ws)
+            self._worker_row_id, worker_row_id = 0, 0
+            while self._worker_row_id == 0:
+
+                worker_list = values(self._ws, 'A{}:A'.format(worker_row_id + 1))
+                worker_list = [item for sublist in worker_list for item in sublist]
+                
+                self._new_worker_record_added, worker_row_id_shift = find_row_ind(worker_list, self._worker_name)
+                worker_row_id += worker_row_id_shift
+
+                status = read_cell_and_update_if_empty(self._ws, worker_row_id, 1, self._worker_name)
+                
+                if status:
+                    time.sleep(10)
+                    current_worker_name = cell_value(self._ws, worker_row_id, 1)
+                    if current_worker_name == self._worker_name:
+                        self._worker_row_id = worker_row_id
+                        self._new_row_added = (worker_row_id > rct)
 
     def record(self, record):
         if 0 == self._rank and '=' in record:
@@ -128,14 +135,20 @@ class SpreadsheetClerk(object):
                 update_cells(self._ws, changed_cell_list)
     
     def get_log_allcolumns(self):
-        rows = row_values(self._ws, self._worker_row_id)
-        return {self._id_to_name[i + 1]: vi for i, vi in enumerate(rows) if len(vi) > 0 and i < self._max_col_id}
+        if 0 == self._rank:
+            rows = row_values(self._ws, self._worker_row_id)
+            return {self._id_to_name[i + 1]: vi for i, vi in enumerate(rows) if len(vi) > 0 and i < self._max_col_id}
+        else:
+            return None
         
     def get_log_columns(self, fields=[]):
-        if len(fields) == 0:
-            return self.get_log_allcolumns()
-        rows = row_values(self._ws, self._worker_row_id)
-        return {self._id_to_name[i + 1]: vi for i, vi in enumerate(rows) if len(vi) > 0 and i < self._max_col_id and self._id_to_name[i + 1] in fields}
+        if 0 == self._rank:
+            if len(fields) == 0:
+                return self.get_log_allcolumns()
+            rows = row_values(self._ws, self._worker_row_id)
+            return {self._id_to_name[i + 1]: vi for i, vi in enumerate(rows) if len(vi) > 0 and i < self._max_col_id and self._id_to_name[i + 1] in fields}
+        else:
+            return None
 
 class ClerkHandler(logging.Handler):
 
